@@ -1,0 +1,4 @@
+Bundle-Name: amf-registration-web-jsp
+Bundle-SymbolicName: com.liferay.amfregistration
+Bundle-Version: 1.0.0
+Export-Package: com.liferay.amfregistration.constants
