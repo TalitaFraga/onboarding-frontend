@@ -1,6 +1,6 @@
 <%@ include file="/init.jsp" %>
 
-<aui:form name="fm">
+<aui:form name="fm" onsubmit="register(event)">
 	<aui:fieldset-group markupView="lexicon">
 		<aui:fieldset label="basic-info">
 			<aui:row>
@@ -168,4 +168,77 @@
 		<aui:button name="submitButton" type="submit" value="submit" />
 	</aui:button-row>
 </aui:form>
+<aui:script>
+	function register(event) {
+		event.preventDefault();
 
+		const formData = new FormData(event.target);
+		const formProps = Object.fromEntries(formData);
+
+		const data = Object.entries(formProps).reduce((previousValue, currentValue) => {
+			const [key, value] = currentValue;
+			const newKey = key.split('_').pop();
+			return { ...previousValue, [newKey]: value };
+		}, {});
+
+		function formatDate(date) {
+			const dd = date.getDate().toString().padStart(2, '0');
+			const MM = (date.getMonth() + 1).toString().padStart(2, '0');
+			const yyyy = date.getFullYear().toString().padStart(4, '0');
+			const HH = date.getHours().toString().padStart(2, '0');
+			const mm = date.getMinutes().toString().padStart(2, '0');
+			const ss = date.getSeconds().toString().padStart(2, '0');
+			return yyyy + "-" + MM + "-" + dd + " " + HH + ":" + mm + ":" + ss;
+		}
+
+		const registerData = {
+			firstName: data.firstName,
+			lastName: data.lastName,
+			emailAddress: data.emailAddress,
+			userName: data.userName,
+			genre: data.genre,
+			birthday: formatDate(new Date(data.birthday + "T00:00:00")),
+			createDate: formatDate(new Date()),
+			modifiedDate: formatDate(new Date()),
+			password: data.password,
+			confirmPassword: data.confirmPassword,
+			homePhone: data.homePhone,
+			mobilePhone: data.mobilePhone,
+			address1: data.address1,
+			address2: data.address2,
+			city: data.city,
+			state: data.state,
+			zipCode: data.zipCode,
+			securityQuestion: data.securityQuestion,
+			answer: data.answer,
+			termsOfUse: data.termsOfUse === "on" ? true : false,
+		};
+
+		const isFormNotFilled = 
+			registerData.firstName === "" ||
+			registerData.lastName === "" ||
+			registerData.emailAddress === "" ||
+			registerData.userName === "" ||
+			registerData.birthday === "0NaN-NaN-NaN NaN:NaN:NaN" ||
+			registerData.password === "" ||
+			registerData.confirmPassword === "" ||
+			registerData.address1 === "" ||
+			registerData.city === "" ||
+			registerData.state === "" ||
+			registerData.zipCode === "" ||
+			registerData.answer === "" ||
+			registerData.termsOfUse === false
+
+		if(isFormNotFilled) {
+			alert("Please fill the required inputs.")
+		} else {
+			Liferay.Util.fetch("http://localhost:8080/o/accounts/add", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify(registerData),
+			}).then(() => alert("Registered!"));
+		}
+	}
+</aui:script>
