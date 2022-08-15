@@ -1,29 +1,35 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import BasicInfo from './form/BasicInfo';
+import BillingAddress from './form/BillingAddress';
+import { Formik } from "formik";
 
-export default class extends React.Component {
-	render() {
-		return (
-            <div>
-				<div>
-        	        <span className="tag">{Liferay.Language.get('portlet-namespace')}:</span> 
-					<span className="value">{this.props.portletNamespace}</span>
-				</div>
-				<div>
-    	            <span className="tag">{Liferay.Language.get('context-path')}:</span>
-					<span className="value">{this.props.contextPath}</span>
-				</div>
-				<div>
-	                <span className="tag">{Liferay.Language.get('portlet-element-id')}:</span>
-					<span className="value">{this.props.portletElementId}</span>
-				</div>
-				
-				<div>
-					<span className="tag">{Liferay.Language.get('configuration')}:</span>
-					<span className="value pre">{JSON.stringify(this.props.configuration, null, 2)}</span>
-				</div>
-				
-			</div>
-		);
-	}	
+function AppComponent(){
+	return(
+		<Formik
+		initialValues={{
+			//   #### Basic Info #### //
+			  first_name: "",
+			  last_name: "",
+			  email_address: "",
+			  username: "",
+			  genre: "",
+			  birthday: "",
+			  password1: "",
+			  password2: "",
+			  // #### Billing Address #### //
+			  address: "",
+			  address2: "",
+			  city: "",
+			  state: "",
+			  zip: "",
+		}}
+		>	
+		<form>
+			<BasicInfo/>
+			<BillingAddress/>
+		</form>
+		</Formik>
+
+	)
 }
+export default AppComponent;
